@@ -1,6 +1,7 @@
 import './globals.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { Providers } from './Providers'; // Jo nayi file banayi hai usko import kiya
 
 export const metadata = {
   title: 'S2 Studio | Architecture & Interiors',
@@ -9,18 +10,54 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      {/* Ab background sach mein "Rich Light" tone (#FAFAFA) rahega */}
-      <body className="bg-[#FAFAFA] text-gray-900 antialiased font-sans">
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+    // suppressHydrationWarning zaroori hai next-themes ke liye
+    <html lang="en" suppressHydrationWarning>
+      {/* Smooth transition aur dark mode ka default background add kiya */}
+      <body className="bg-[#FAFAFA] dark:bg-[#121212] text-gray-900 dark:text-gray-100 antialiased font-sans transition-colors duration-700 ease-in-out">
+        <Providers>
+          <Navbar />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
 }
+
+
+
+
+
+
+
+
+
+
+// import './globals.css';
+// import Navbar from '../components/Navbar';
+// import Footer from '../components/Footer';
+
+// export const metadata = {
+//   title: 'S2 Studio | Architecture & Interiors',
+//   description: 'End-to-end luxury architectural and interior solutions.',
+// };
+
+// export default function RootLayout({ children }) {
+//   return (
+//     <html lang="en">
+//       {/* Ab background sach mein "Rich Light" tone (#FAFAFA) rahega */}
+//       <body className="bg-[#FAFAFA] text-gray-900 antialiased font-sans">
+//         <Navbar />
+//         <main className="min-h-screen">
+//           {children}
+//         </main>
+//         <Footer />
+//       </body>
+//     </html>
+//   );
+// }
 
 
 

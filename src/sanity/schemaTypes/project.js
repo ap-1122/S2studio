@@ -14,7 +14,7 @@ export const project = {
       title: 'URL Slug',
       type: 'slug',
       options: {
-        source: 'title', // Automatically generates the URL from the title
+        source: 'title', 
         maxLength: 96,
       },
       validation: (Rule) => Rule.required(),
@@ -37,7 +37,7 @@ export const project = {
     {
       name: 'description',
       title: 'Project Description',
-      type: 'text', // For long paragraphs
+      type: 'text', 
     },
     {
       name: 'mainImage',
@@ -59,15 +59,92 @@ export const project = {
       options: { accept: '.pdf' }
     },
 
-    // --- NEW: VIDEO WALKTHROUGH ---
+    // --- UPDATED: UNIVERSAL VIDEO SUPPORT ---
     {
-      name: 'youtubeUrl',
-      title: '3D Walkthrough (YouTube Link)',
+      name: 'videoUrl',
+      title: 'Project Video (YouTube / Shorts / Instagram)',
       type: 'url',
-      description: 'Apne YouTube video ka link yahan paste karein (e.g., https://www.youtube.com/watch?v=...)',
+      description: 'Yahan koi bhi link paste karein (YouTube Standard, YouTube Shorts, ya Instagram Reels/Posts). Agar video nahi hai, toh ise khali chhod dein.',
     }
   ],
 }
+
+
+
+
+
+
+
+// export const project = {
+//   name: 'project',
+//   title: 'Projects Portfolio',
+//   type: 'document',
+//   fields: [
+//     {
+//       name: 'title',
+//       title: 'Project Title',
+//       type: 'string',
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'slug',
+//       title: 'URL Slug',
+//       type: 'slug',
+//       options: {
+//         source: 'title', // Automatically generates the URL from the title
+//         maxLength: 96,
+//       },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'category',
+//       title: 'Category',
+//       type: 'string',
+//       options: {
+//         list: [
+//           { title: 'Architecture', value: 'Architecture' },
+//           { title: 'Interior Design', value: 'Interior Design' },
+//           { title: 'Commercial', value: 'Commercial' },
+//           { title: 'Construction', value: 'Construction' },
+//         ],
+//         layout: 'dropdown'
+//       },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'description',
+//       title: 'Project Description',
+//       type: 'text', // For long paragraphs
+//     },
+//     {
+//       name: 'mainImage',
+//       title: 'Main Project Image (Cover)',
+//       type: 'image',
+//       options: { hotspot: true },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'gallery',
+//       title: 'Project Gallery (Multiple Images)',
+//       type: 'array',
+//       of: [{ type: 'image', options: { hotspot: true } }],
+//     },
+//     {
+//       name: 'projectPdf',
+//       title: 'Project Plan / Brochure (PDF)',
+//       type: 'file',
+//       options: { accept: '.pdf' }
+//     },
+
+//     // --- NEW: VIDEO WALKTHROUGH ---
+//     {
+//       name: 'youtubeUrl',
+//       title: '3D Walkthrough (YouTube Link)',
+//       type: 'url',
+//       description: 'Apne YouTube video ka link yahan paste karein (e.g., https://www.youtube.com/watch?v=...)',
+//     }
+//   ],
+// }
 
 
 
