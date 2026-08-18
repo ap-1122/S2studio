@@ -34,6 +34,34 @@ export const project = {
       },
       validation: (Rule) => Rule.required(),
     },
+    // --- NAYA: Project Status ---
+    {
+      name: 'status',
+      title: 'Project Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Completed', value: 'Completed' },
+          { title: 'Ongoing', value: 'Ongoing' },
+          { title: 'Upcoming', value: 'Upcoming' }
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'Completed'
+    },
+    // --- NAYA: Timeline ---
+    {
+      name: 'startDate',
+      title: 'Start Date (Month & Year)',
+      type: 'string',
+      description: 'Example: Jan 2024'
+    },
+    {
+      name: 'endDate',
+      title: 'End Date (Month & Year)',
+      type: 'string',
+      description: 'Example: Oct 2024 (Leave blank if Ongoing)'
+    },
     {
       name: 'description',
       title: 'Project Description',
@@ -58,16 +86,99 @@ export const project = {
       type: 'file',
       options: { accept: '.pdf' }
     },
-
     // --- UPDATED: UNIVERSAL VIDEO SUPPORT ---
     {
       name: 'videoUrl',
       title: 'Project Video (YouTube / Shorts / Instagram)',
       type: 'url',
       description: 'Yahan koi bhi link paste karein (YouTube Standard, YouTube Shorts, ya Instagram Reels/Posts). Agar video nahi hai, toh ise khali chhod dein.',
+    },
+    // --- NAYA: 360/3D Virtual Tour ---
+    {
+      name: 'virtualTourUrl',
+      title: '360° / 3D Virtual Tour URL',
+      type: 'url',
+      description: 'Kuula, Matterport, ya kisi aur 360 view ka public share link yahan daalein.',
     }
   ],
 }
+
+
+
+
+
+
+
+// export const project = {
+//   name: 'project',
+//   title: 'Projects Portfolio',
+//   type: 'document',
+//   fields: [
+//     {
+//       name: 'title',
+//       title: 'Project Title',
+//       type: 'string',
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'slug',
+//       title: 'URL Slug',
+//       type: 'slug',
+//       options: {
+//         source: 'title', 
+//         maxLength: 96,
+//       },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'category',
+//       title: 'Category',
+//       type: 'string',
+//       options: {
+//         list: [
+//           { title: 'Architecture', value: 'Architecture' },
+//           { title: 'Interior Design', value: 'Interior Design' },
+//           { title: 'Commercial', value: 'Commercial' },
+//           { title: 'Construction', value: 'Construction' },
+//         ],
+//         layout: 'dropdown'
+//       },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'description',
+//       title: 'Project Description',
+//       type: 'text', 
+//     },
+//     {
+//       name: 'mainImage',
+//       title: 'Main Project Image (Cover)',
+//       type: 'image',
+//       options: { hotspot: true },
+//       validation: (Rule) => Rule.required(),
+//     },
+//     {
+//       name: 'gallery',
+//       title: 'Project Gallery (Multiple Images)',
+//       type: 'array',
+//       of: [{ type: 'image', options: { hotspot: true } }],
+//     },
+//     {
+//       name: 'projectPdf',
+//       title: 'Project Plan / Brochure (PDF)',
+//       type: 'file',
+//       options: { accept: '.pdf' }
+//     },
+
+//     // --- UPDATED: UNIVERSAL VIDEO SUPPORT ---
+//     {
+//       name: 'videoUrl',
+//       title: 'Project Video (YouTube / Shorts / Instagram)',
+//       type: 'url',
+//       description: 'Yahan koi bhi link paste karein (YouTube Standard, YouTube Shorts, ya Instagram Reels/Posts). Agar video nahi hai, toh ise khali chhod dein.',
+//     }
+//   ],
+// }
 
 
 

@@ -36,11 +36,15 @@ export default async function ProjectDetailPage({ params }) {
   const query = `*[_type == "project" && slug.current == $slug][0] {
     title,
     category,
+    status,
+    startDate,
+    endDate,
     description,
     "mainImg": mainImage.asset->url,
     "gallery": gallery[].asset->url,
     "pdfUrl": projectPdf.asset->url,
-    videoUrl
+    videoUrl,
+    virtualTourUrl
   }`;
 
   const project = await client.fetch(query, { slug });
@@ -70,9 +74,20 @@ export default async function ProjectDetailPage({ params }) {
           />
         )}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-20 z-10">
-          <h3 className="text-[#C5A059] text-sm tracking-[0.3em] font-bold uppercase mb-4">
-            {project.category}
-          </h3>
+          <div className="flex items-center gap-3 mb-4 justify-center">
+            <h3 className="text-[#C5A059] text-sm tracking-[0.3em] font-bold uppercase">
+              {project.category}
+            </h3>
+            {/* Status Tag on Hero */}
+            {project.status && (
+              <span className={`text-[10px] tracking-widest px-2 py-1 uppercase rounded-sm border ${
+                project.status === 'Ongoing' ? 'border-yellow-500 text-yellow-500' : 
+                project.status === 'Completed' ? 'border-green-500 text-green-500' : 'border-gray-400 text-gray-400'
+              }`}>
+                {project.status}
+              </span>
+            )}
+          </div>
           <h1 className="text-5xl md:text-7xl font-serif text-white drop-shadow-md">
             {project.title}
           </h1>
@@ -88,6 +103,32 @@ export default async function ProjectDetailPage({ params }) {
               Project Overview
             </h2>
             
+            {/* --- NAYA: TIMELINE SECTION --- */}
+            {(project.startDate || project.endDate) && (
+              <div className="mb-8 flex gap-4 text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                {project.startDate && (
+                  <div>
+                    <span className="block text-[10px] text-gray-400 dark:text-gray-600 mb-1">Started</span>
+                    <span className="text-gray-900 dark:text-white">{project.startDate}</span>
+                  </div>
+                )}
+                {project.startDate && project.endDate && <div className="mt-3 w-4 h-[1px] bg-gray-300 dark:bg-gray-700"></div>}
+                {project.endDate && (
+                  <div>
+                    <span className="block text-[10px] text-gray-400 dark:text-gray-600 mb-1">Completed</span>
+                    <span className="text-[#C5A059]">{project.endDate}</span>
+                  </div>
+                )}
+                {project.startDate && !project.endDate && project.status === 'Ongoing' && (
+                  <div>
+                    <span className="block text-[10px] text-gray-400 dark:text-gray-600 mb-1">Expected</span>
+                    <span className="text-yellow-600 dark:text-yellow-500">In Progress</span>
+                  </div>
+                )}
+              </div>
+            )}
+            {/* ------------------------------ */}
+
             {project.description ? (
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-10 text-justify transition-colors duration-700">
                 {project.description}
@@ -134,12 +175,33 @@ export default async function ProjectDetailPage({ params }) {
           {/* RIGHT COLUMN: Video & Image Gallery */}
           <div className="lg:w-2/3">
             
+            {/* --- NAYA: 360 VIRTUAL TOUR SECTION --- */}
+            {project.virtualTourUrl && (
+              <div className="mb-16">
+                <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-800 pb-4 flex items-center justify-between transition-colors duration-700">
+                  360° Virtual Tour
+                  <span className="bg-[#C5A059] text-white text-[10px] tracking-widest px-2 py-1 uppercase rounded-sm flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Interactive
+                  </span>
+                </h2>
+                <div className="relative w-full pt-[56.25%] bg-gray-200 dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-800">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={project.virtualTourUrl}
+                    allowFullScreen
+                    allow="vr" // Important for 360 viewers
+                  ></iframe>
+                </div>
+              </div>
+            )}
+            {/* --------------------------------------- */}
+
             {/* DYNAMIC VIDEO SECTION */}
             {embedData && (
               <div className="mb-16">
                 <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-800 pb-4 flex items-center justify-between transition-colors duration-700">
                   Project Showcase 
-                  <span className="bg-[#C5A059] text-white text-[10px] tracking-widest px-2 py-1 uppercase rounded-sm">
+                  <span className="bg-gray-900 dark:bg-white dark:text-gray-900 text-white text-[10px] tracking-widest px-2 py-1 uppercase rounded-sm">
                     {embedData.platform === 'instagram' ? 'Reel / Post' : 'Cinematic'}
                   </span>
                 </h2>
@@ -189,6 +251,205 @@ export default async function ProjectDetailPage({ params }) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+// import { client } from '@/sanity/lib/client';
+// import Link from 'next/link';
+// import Image from 'next/image';
+
+// // Smart Helper Function: YouTube, Shorts aur Instagram teeno ko parse karne ke liye
+// const getEmbedData = (url) => {
+//   if (!url) return null;
+
+//   // 1. Check for YouTube (Standard & Shorts)
+//   const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+//   const ytMatch = url.match(ytRegExp);
+//   if (ytMatch && ytMatch[2].length === 11) {
+//     return { 
+//       platform: 'youtube', 
+//       url: `https://www.youtube.com/embed/${ytMatch[2]}` 
+//     };
+//   }
+
+//   // 2. Check for Instagram (Reels & Posts)
+//   const instaRegExp = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel|tv)\/([^\/?#&]+)/;
+//   const instaMatch = url.match(instaRegExp);
+//   if (instaMatch && instaMatch[1]) {
+//     return { 
+//       platform: 'instagram', 
+//       url: `https://www.instagram.com/p/${instaMatch[1]}/embed` 
+//     };
+//   }
+
+//   return null; // Invalid link
+// };
+
+// export default async function ProjectDetailPage({ params }) {
+//   const resolvedParams = await params;
+//   const slug = resolvedParams.slug;
+
+//   const query = `*[_type == "project" && slug.current == $slug][0] {
+//     title,
+//     category,
+//     description,
+//     "mainImg": mainImage.asset->url,
+//     "gallery": gallery[].asset->url,
+//     "pdfUrl": projectPdf.asset->url,
+//     videoUrl
+//   }`;
+
+//   const project = await client.fetch(query, { slug });
+
+//   if (!project) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-[#F3F2EC] dark:bg-[#121212] transition-colors duration-700">
+//         <h1 className="text-2xl font-serif text-gray-900 dark:text-white">Project Not Found</h1>
+//       </div>
+//     );
+//   }
+
+//   const embedData = getEmbedData(project.videoUrl);
+
+//   return (
+//     <div className="bg-[#FAFAFA] dark:bg-[#121212] min-h-screen pb-24 transition-colors duration-700">
+      
+//       {/* 1. HERO SECTION */}
+//       <div className="relative w-full h-[60vh] bg-gray-900 dark:bg-black">
+//         {project.mainImg && (
+//           <Image 
+//             src={project.mainImg}
+//             alt={project.title}
+//             fill
+//             sizes="100vw"
+//             className="object-cover opacity-70"
+//           />
+//         )}
+//         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-20 z-10">
+//           <h3 className="text-[#C5A059] text-sm tracking-[0.3em] font-bold uppercase mb-4">
+//             {project.category}
+//           </h3>
+//           <h1 className="text-5xl md:text-7xl font-serif text-white drop-shadow-md">
+//             {project.title}
+//           </h1>
+//         </div>
+//       </div>
+
+//       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-20">
+//         <div className="flex flex-col lg:flex-row gap-16">
+          
+//           {/* LEFT COLUMN: Details & Documents */}
+//           <div className="lg:w-1/3">
+//             <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-800 pb-4 transition-colors duration-700">
+//               Project Overview
+//             </h2>
+            
+//             {project.description ? (
+//               <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-10 text-justify transition-colors duration-700">
+//                 {project.description}
+//               </p>
+//             ) : (
+//               <p className="text-gray-400 dark:text-gray-600 italic mb-10">No detailed description provided.</p>
+//             )}
+
+//             {/* Architecture Plans Box */}
+//             <div className="bg-white dark:bg-[#1A1A1A] p-8 border border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-700">
+//               <h3 className="text-sm font-bold tracking-[0.2em] text-gray-900 dark:text-white uppercase mb-4">
+//                 Architecture Plans
+//               </h3>
+//               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+//                 Download the official floor plans, elevations, and structural documents.
+//               </p>
+              
+//               {project.pdfUrl ? (
+//                 <a 
+//                   href={project.pdfUrl}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="block w-full text-center bg-gray-900 dark:bg-[#C5A059] text-white px-6 py-3 tracking-[0.2em] text-xs font-bold hover:bg-[#C5A059] dark:hover:bg-white dark:hover:text-gray-900 transition-colors duration-300"
+//                 >
+//                   DOWNLOAD PDF PLAN
+//                 </a>
+//               ) : (
+//                 <button disabled className="block w-full text-center bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 px-6 py-3 tracking-[0.2em] text-xs font-bold cursor-not-allowed transition-colors duration-700">
+//                   NO PLAN UPLOADED
+//                 </button>
+//               )}
+//             </div>
+
+//             <div className="mt-10">
+//               <Link 
+//                 href="/projects"
+//                 className="text-sm font-bold tracking-[0.2em] text-[#C5A059] hover:text-gray-900 dark:hover:text-white transition-colors uppercase flex items-center gap-2"
+//               >
+//                 ← Back to Portfolio
+//               </Link>
+//             </div>
+//           </div>
+
+//           {/* RIGHT COLUMN: Video & Image Gallery */}
+//           <div className="lg:w-2/3">
+            
+//             {/* DYNAMIC VIDEO SECTION */}
+//             {embedData && (
+//               <div className="mb-16">
+//                 <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-800 pb-4 flex items-center justify-between transition-colors duration-700">
+//                   Project Showcase 
+//                   <span className="bg-[#C5A059] text-white text-[10px] tracking-widest px-2 py-1 uppercase rounded-sm">
+//                     {embedData.platform === 'instagram' ? 'Reel / Post' : 'Cinematic'}
+//                   </span>
+//                 </h2>
+                
+//                 {/* Responsive Player Box */}
+//                 <div className={`relative w-full bg-black overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800 ${embedData.platform === 'instagram' ? 'max-w-md mx-auto rounded-md aspect-[9/16]' : 'pt-[56.25%]'}`}>
+//                   <iframe
+//                     className="absolute top-0 left-0 w-full h-full"
+//                     src={embedData.url}
+//                     title="Project Video"
+//                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//                     allowFullScreen
+//                   ></iframe>
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* Existing Image Gallery */}
+//             <h2 className="text-2xl font-serif text-gray-900 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-800 pb-4 transition-colors duration-700">
+//               Image Gallery
+//             </h2>
+            
+//             {project.gallery && project.gallery.length > 0 ? (
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 {project.gallery.map((imgUrl, index) => (
+//                   <div key={index} className="h-64 w-full relative bg-gray-200 dark:bg-gray-800 overflow-hidden group cursor-pointer border border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-700">
+//                     <Image 
+//                       src={imgUrl}
+//                       alt={`Gallery Image ${index + 1}`}
+//                       fill
+//                       sizes="(max-width: 768px) 100vw, 50vw"
+//                       className="object-cover transition-transform duration-700 group-hover:scale-110"
+//                     />
+//                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 dark:group-hover:bg-black/40 transition-all duration-500 z-10"></div>
+//                   </div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <div className="w-full h-64 bg-gray-100 dark:bg-gray-900 flex items-center justify-center border border-dashed border-gray-300 dark:border-gray-700 transition-colors duration-700">
+//                 <p className="text-gray-400 dark:text-gray-600 tracking-widest text-sm uppercase">No Gallery Images Uploaded</p>
+//               </div>
+//             )}
+//           </div>
+
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
