@@ -173,7 +173,7 @@ export default async function Home() {
 
       {/* FLOATING WHATSAPP BUTTON */}
       <a
-        href="https://wa.me/8269373749?text=Hello%20S%C2%B2%20Studio,%20I%20want%20to%20discuss%20a%20project..."
+        href="https://wa.me/9589303667?text=Hello%20S%C2%B2%20Studio,%20I%20want%20to%20discuss%20a%20project..."
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] dark:shadow-[0_4px_20px_0_rgba(37,211,102,0.5)] hover:scale-110 hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] transition-all duration-300 flex items-center justify-center group"
